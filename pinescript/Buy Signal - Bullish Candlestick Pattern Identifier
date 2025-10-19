@@ -1,5 +1,5 @@
 //@version=6
-// INDICATOR: Bullish Candlestick Pattern Identifier 
+// Buy Signal - Bullish Candlestick Pattern Identifier 
 // This script identifies and labels six major bullish candlestick patterns:
 // 1. Hammer
 // 2. Inverse Hammer
@@ -8,8 +8,7 @@
 // 5. Morning Star
 // 6. Three White Soldiers
 
-
-indicator("Bullish Candlestick Pattern Finder", overlay=true)
+indicator("Buy Signal - Bullish Candlestick Pattern Finder", overlay=true)
 
 // Pattern Detection Logic
 
@@ -58,17 +57,12 @@ isThreeWhiteSoldiers = areThreeBulls and isProgressive
 // Add a unique visual marker below the chart for each identified pattern.
 plotshape(series=isHammer, title="Hammer", location=location.belowbar, color=color.new(color.green, 20), style=shape.labelup, text="H", textcolor=color.white, size=size.tiny)
 
-
 plotshape(series=isInverseHammer, title="Inverse Hammer", location=location.belowbar, color=color.new(color.lime, 30), style=shape.labelup, text="IH", textcolor=color.white, size=size.tiny)
-
 
 plotshape(series=isBullishEngulfing, title="Bullish Engulfing", location=location.belowbar, color=color.new(color.green, 0), style=shape.labelup, text="ENGULF", textcolor=color.white, size=size.small)
 
-
 plotshape(series=isPiercingLine, title="Piercing Line", location=location.belowbar, color=color.new(color.aqua, 10), style=shape.labelup, text="PIERCE", textcolor=color.white, size=size.small)
 
-
 plotshape(series=isMorningStar, title="Morning Star", location=location.belowbar, color=color.new(color.blue, 10), style=shape.labelup, text="MORN", textcolor=color.white, size=size.small)
-
 
 plotshape(series=isThreeWhiteSoldiers, title="Three White Soldiers", location=location.belowbar, color=color.new(color.white, 0), style=shape.labelup, text="3WS", textcolor=color.black, size=size.small)
