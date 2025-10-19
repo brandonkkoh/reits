@@ -1,13 +1,14 @@
 //@version=6
-// --- INDICATOR: RSI Pullback in an Uptrend ---
+// BUY Signals - RSI Pullback in Uptrend 
 // This indicator identifies buy signals based on the methodology of buying an RSI dip within a confirmed long-term uptrend.
 
-indicator("RSI Pullback in Uptrend", overlay=true)
+indicator("BUY Signals - RSI Pullback in Uptrend", overlay=true)
 
 // --- Inputs ---
 longMaLength = input.int(200, title="Long-term Trend MA (SMA)")
 rsiLength = input.int(14, title="RSI Length")
 rsiDipLevel = input.int(40, title="RSI Dip-Buy Level")
+
 
 // --- Calculations ---
 // 1. Trend Confirmation Filter
@@ -18,13 +19,16 @@ isTrendUp = close > longMA
 rsiValue = ta.rsi(close, rsiLength)
 rsiDipSignal = ta.crossunder(rsiValue, rsiDipLevel)
 
+
 // --- Final Signal Logic ---
 // A buy signal is only valid if the trend is up AND the RSI dip occurs.
 buySignal = isTrendUp and rsiDipSignal
 
+
 // --- Plotting & Visuals ---
 // Plot the long-term moving average on the main chart for trend context.
 plot(longMA, "200 SMA (Trend Filter)", color=color.new(color.blue, 20), linewidth=2)
+
 
 // Add a clear visual marker on the price chart for the buy signal.
 plotshape(series=buySignal, title="RSI Buy Signal", location=location.belowbar, color=color.new(color.green, 0), style=shape.labelup, text="RSI BUY", textcolor=color.white, size=size.small)
