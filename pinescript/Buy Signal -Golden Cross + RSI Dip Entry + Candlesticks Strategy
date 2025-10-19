@@ -1,19 +1,20 @@
 //@version=6
-// INDICATOR: Golden Cross + RSI Dip Entry + Candlesticks Strategy (Triple Confluence) Buy Signal
-// Combine three layers of analysis for a buy signal:
+// Buy Signals - Golden Cross, RSI Dip and Candlestick Confluence Strategy
+// Combining three layers of analysis for a buy signal:
 // 1. Trend Filter: The Golden Cross state must be active (50 SMA > 200 SMA).
 // 2. Pullback Zone: The RSI must be in a non-overbought state.
 // 3. Entry Trigger: Any one of six major bullish candlestick patterns must appear.
 
-indicator("Triple Confluence Buy Signal", overlay=true)
+indicator("Buy Signals - Golden Cross, RSI Dip and Candlestick Confluence Strategy", overlay=true)
 
-// Inputs 
+// --- Inputs ---
 shortMaLength = input.int(50, title="Short-term MA")
 longMaLength = input.int(200, title="Long-term MA")
 rsiLength = input.int(14, title="RSI Length")
 rsiMaxLevel = input.int(50, title="RSI Max Level for Pullback") // Only buy if RSI is below this level
 
-// Calculations 
+
+// --- Calculations ---
 
 // 1. The Trend Filter
 shortMA = ta.sma(close, shortMaLength)
@@ -55,17 +56,18 @@ isThreeWhiteSoldiers = areThreeBulls and isProgressive
 // Combine all six candle triggers into one condition
 candleTrigger = isHammer or isInverseHammer or isBullishEngulfing or isPiercingLine or isMorningStar or isThreeWhiteSoldiers
 
-// Final Signal Logic 
+// --- Final Signal Logic ---
 // The final signal is true only if all three layers of the funnel are confirmed.
 finalBuySignal = isUptrend and isInPullbackZone and candleTrigger
 
-// Plotting & Visuals 
+// --- Plotting & Visuals ---
 plot(shortMA, "50 SMA", color=color.new(color.orange, 40))
 plot(longMA, "200 SMA", color=color.new(color.blue, 20), linewidth=2)
+
 
 // Use the background to show the Trend Filter state (Layer 1)
 bgcolor(isUptrend ? color.new(color.green, 90) : color.new(color.red, 90), title="Market State")
 
+
 // Plot a single, powerful marker only when the final confluence signal occurs.
-plotshape(series=finalBuySignal, title="Confluence Buy Signal", location=location.belowbar,
-    color=color.new(color.lime, 0), style=shape.labelup, text="BUY", textcolor=color.white, size=size.normal)
+plotshape(series=finalBuySignal, title="Confluence Buy Signal", location=location.belowbar, color=color.new(color.lime, 0), style=shape.labelup, text="BUY", textcolor=color.white, size=size.normal)
