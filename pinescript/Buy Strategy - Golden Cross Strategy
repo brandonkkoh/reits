@@ -1,0 +1,21 @@
+//@version=6
+
+indicator("Golden Cross Buy Signals", overlay=true)
+
+// --- Define the Moving Averages ---
+shortMaLength = input.int(50, title="Short-term MA")
+longMaLength = input.int(200, title="Long-term MA")
+
+shortMA = ta.sma(close, shortMaLength)
+longMA = ta.sma(close, longMaLength)
+
+// --- Identify the Golden Cross Signal ---
+// The 'ta.crossover' function is true only on the single bar where the crossover happens.
+buySignal = ta.crossover(shortMA, longMA)
+
+// Plot the two moving averages on the chart for visualization.
+plot(shortMA, title="50-Day MA", color=color.orange, linewidth=2)
+plot(longMA, title="200-Day MA", color=color.blue, linewidth=2)
+
+// Add a clear visual marker on the chart for the buy signal.
+plotshape(series=buySignal, title="Golden Cross Buy Signal", location=location.belowbar, color=color.new(color.green, 20), style=shape.labelup, text="BUY", textcolor=color.white, size=size.small)

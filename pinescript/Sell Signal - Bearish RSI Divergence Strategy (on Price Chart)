@@ -1,0 +1,45 @@
+//@version=6
+// Bearish RSI Divergence Signal (on Price Chart)
+// This script identifies bearish RSI divergence and plots the signal directly on the main price chart using overlay=true.
+
+indicator("Bearish RSI Divergence Signal", overlay=true)
+
+// Inputs 
+rsiLength = input.int(14, title="RSI Length")
+pivotLookback = input.int(5, title="Pivot Lookback Period")
+rsiStrengthLevel = input.int(60, title="Min RSI Level for Divergence")
+
+
+// Calculations 
+rsiValue = ta.rsi(close, rsiLength)
+
+
+// Find the last pivot high points in both price and RSI
+pivotHighPrice = ta.pivothigh(high, pivotLookback, pivotLookback)
+pivotHighRsi = ta.pivothigh(rsiValue, pivotLookback, pivotLookback)
+
+
+// Divergence Logic 
+var float lastPivotPrice = na
+var float lastPivotRsi = na
+var int lastPivotBarIndex = na
+
+
+bool bearishDivergence = false
+
+
+if not na(pivotHighRsi)
+   if not na(lastPivotPrice) and pivotHighPrice > lastPivotPrice and pivotHighRsi < lastPivotRsi
+       bearishDivergence := true
+       // Draw a line on the price chart connecting the two price peaks that formed the divergence
+       line.new(bar_index[pivotLookback], pivotHighPrice, lastPivotBarIndex, lastPivotPrice, color=color.new(color.red, 50), width=2)
+  
+   lastPivotPrice := pivotHighPrice
+   lastPivotRsi := pivotHighRsi
+   lastPivotBarIndex := bar_index[pivotLookback]
+
+
+// Plotting & Visuals
+
+// Add a clear visual marker on the PRICE CHART when a divergence is confirmed
+plotshape(series=bearishDivergence, title="Bearish Divergence", location=location.abovebar, color=color.new(color.red, 0), style=shape.labeldown, text="SELL\nDIV", textcolor=color.white, size=size.small)

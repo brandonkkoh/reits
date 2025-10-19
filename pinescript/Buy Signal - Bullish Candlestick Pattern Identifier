@@ -1,0 +1,74 @@
+//@version=6
+// INDICATOR: Bullish Candlestick Pattern Identifier 
+// This script identifies and labels six major bullish candlestick patterns:
+// 1. Hammer
+// 2. Inverse Hammer
+// 3. Bullish Engulfing
+// 4. Piercing Line
+// 5. Morning Star
+// 6. Three White Soldiers
+
+
+indicator("Bullish Candlestick Pattern Finder", overlay=true)
+
+// Pattern Detection Logic
+
+// 1. Hammer
+// A single-candle pattern in a downtrend with a long lower wick and small body at the top.
+bodySizeH = math.abs(close - open)
+lowerWickH = math.min(open, close) - low
+upperWickH = high - math.max(open, close)
+isDownTrendH = close < ta.sma(close, 5) // Context: appears after a short-term fall
+isHammer = isDownTrendH and (lowerWickH > bodySizeH * 2) and (upperWickH < bodySizeH * 0.4) and (bodySizeH > 0)
+
+// 2. Inverse Hammer
+// A single-candle pattern in a downtrend with a long upper wick and small body at the bottom.
+isInverseHammer = isDownTrendH and (upperWickH > bodySizeH * 2) and (lowerWickH < bodySizeH * 0.4) and (bodySizeH > 0)
+
+// 3. Bullish Engulfing 
+// A two-candle pattern where a large bullish candle engulfs the prior small bearish candle.
+isBullishEngulfing = close > open and close[1] < open[1] and close > open[1] and open < close[1]
+
+// 4. Piercing Line 
+// A two-candle pattern where a bullish candle opens below the prior bearish close and closes above the midpoint of the prior candle's body.
+isPiercingLine = close[1] < open[1] and close > open and open < close[1] and close > (open[1] + close[1]) / 2
+
+// 5. Morning Star
+// A three-candle bottom reversal pattern: a long bearish candle, a small indecisive candle, and a long bullish candle.
+avgCandleSizeM = ta.sma(high - low, 14)
+bar1_bearishM = close[2] < open[2] and (open[2] - close[2]) > avgCandleSizeM[2]
+bar2_starM = math.abs(close[1] - open[1]) < (high[1] - low[1]) * 0.3
+bar3_bullishM = close > open and close > (open[2] + close[2]) / 2
+isMorningStar = bar1_bearishM and bar2_starM and bar3_bullishM
+
+// 6. Three White Soldiers 
+// Three consecutive long-bodied bullish candles that close progressively higher.
+body1 = close[2] - open[2]
+body2 = close[1] - open[1]
+body3 = close - open
+avgBody = ta.sma(math.abs(close-open), 10)
+
+// Condition: All three are bullish candles with decent-sized bodies
+areThreeBulls = body1 > avgBody[2] and body2 > avgBody[1] and body3 > avgBody
+// Condition: Each opens within the previous body and closes higher
+isProgressive = open[1] > open[2] and open[1] < close[2] and close[1] > close[2] and open > open[1] and open < close[1] and close > close[1]
+isThreeWhiteSoldiers = areThreeBulls and isProgressive
+
+// Plotting & Visuals 
+// Add a unique visual marker below the chart for each identified pattern.
+plotshape(series=isHammer, title="Hammer", location=location.belowbar, color=color.new(color.green, 20), style=shape.labelup, text="H", textcolor=color.white, size=size.tiny)
+
+
+plotshape(series=isInverseHammer, title="Inverse Hammer", location=location.belowbar, color=color.new(color.lime, 30), style=shape.labelup, text="IH", textcolor=color.white, size=size.tiny)
+
+
+plotshape(series=isBullishEngulfing, title="Bullish Engulfing", location=location.belowbar, color=color.new(color.green, 0), style=shape.labelup, text="ENGULF", textcolor=color.white, size=size.small)
+
+
+plotshape(series=isPiercingLine, title="Piercing Line", location=location.belowbar, color=color.new(color.aqua, 10), style=shape.labelup, text="PIERCE", textcolor=color.white, size=size.small)
+
+
+plotshape(series=isMorningStar, title="Morning Star", location=location.belowbar, color=color.new(color.blue, 10), style=shape.labelup, text="MORN", textcolor=color.white, size=size.small)
+
+
+plotshape(series=isThreeWhiteSoldiers, title="Three White Soldiers", location=location.belowbar, color=color.new(color.white, 0), style=shape.labelup, text="3WS", textcolor=color.black, size=size.small)

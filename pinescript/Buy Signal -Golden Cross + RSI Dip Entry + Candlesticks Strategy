@@ -1,0 +1,71 @@
+//@version=6
+// INDICATOR: Golden Cross + RSI Dip Entry + Candlesticks Strategy (Triple Confluence) Buy Signal
+// Combine three layers of analysis for a buy signal:
+// 1. Trend Filter: The Golden Cross state must be active (50 SMA > 200 SMA).
+// 2. Pullback Zone: The RSI must be in a non-overbought state.
+// 3. Entry Trigger: Any one of six major bullish candlestick patterns must appear.
+
+indicator("Triple Confluence Buy Signal", overlay=true)
+
+// Inputs 
+shortMaLength = input.int(50, title="Short-term MA")
+longMaLength = input.int(200, title="Long-term MA")
+rsiLength = input.int(14, title="RSI Length")
+rsiMaxLevel = input.int(50, title="RSI Max Level for Pullback") // Only buy if RSI is below this level
+
+// Calculations 
+
+// 1. The Trend Filter
+shortMA = ta.sma(close, shortMaLength)
+longMA = ta.sma(close, longMaLength)
+isUptrend = shortMA > longMA
+
+// 2. The Pullback Zone
+rsiValue = ta.rsi(close, rsiLength)
+isInPullbackZone = rsiValue < rsiMaxLevel
+
+// 3. The Candlestick Triggers (Now includes all six patterns)
+// Hammer
+bodySizeH = math.abs(close - open)
+lowerWickH = math.min(open, close) - low
+upperWickH = high - math.max(open, close)
+isDownTrendContext = close < ta.sma(close, 5)
+isHammer = isDownTrendContext and (lowerWickH > bodySizeH * 2) and (upperWickH < bodySizeH * 0.4) and (bodySizeH > 0)
+// Inverse Hammer
+isInverseHammer = isDownTrendContext and (upperWickH > bodySizeH * 2) and (lowerWickH < bodySizeH * 0.4) and (bodySizeH > 0)
+// Bullish Engulfing
+isBullishEngulfing = close > open and close[1] < open[1] and close > open[1] and open < close[1]
+// Piercing Line
+isPiercingLine = close[1] < open[1] and close > open and open < close[1] and close > (open[1] + close[1]) / 2
+// Morning Star
+avgCandleSizeM = ta.sma(high - low, 14)
+bar1_bearishM = close[2] < open[2] and (open[2] - close[2]) > avgCandleSizeM[2]
+bar2_starM = math.abs(close[1] - open[1]) < (high[1] - low[1]) * 0.3 and close[1] < close[2]
+bar3_bullishM = close > open and close > (open[2] + close[2]) / 2
+isMorningStar = bar1_bearishM and bar2_starM and bar3_bullishM
+// Three White Soldiers
+body1 = close[2] - open[2]
+body2 = close[1] - open[1]
+body3 = close - open
+avgBody = ta.sma(math.abs(close-open), 10)
+areThreeBulls = body1 > avgBody[2] and body2 > avgBody[1] and body3 > avgBody
+isProgressive = open[1] > open[2] and open[1] < close[2] and close[1] > close[2] and open > open[1] and open < close[1] and close > close[1]
+isThreeWhiteSoldiers = areThreeBulls and isProgressive
+
+// Combine all six candle triggers into one condition
+candleTrigger = isHammer or isInverseHammer or isBullishEngulfing or isPiercingLine or isMorningStar or isThreeWhiteSoldiers
+
+// Final Signal Logic 
+// The final signal is true only if all three layers of the funnel are confirmed.
+finalBuySignal = isUptrend and isInPullbackZone and candleTrigger
+
+// Plotting & Visuals 
+plot(shortMA, "50 SMA", color=color.new(color.orange, 40))
+plot(longMA, "200 SMA", color=color.new(color.blue, 20), linewidth=2)
+
+// Use the background to show the Trend Filter state (Layer 1)
+bgcolor(isUptrend ? color.new(color.green, 90) : color.new(color.red, 90), title="Market State")
+
+// Plot a single, powerful marker only when the final confluence signal occurs.
+plotshape(series=finalBuySignal, title="Confluence Buy Signal", location=location.belowbar,
+    color=color.new(color.lime, 0), style=shape.labelup, text="BUY", textcolor=color.white, size=size.normal)

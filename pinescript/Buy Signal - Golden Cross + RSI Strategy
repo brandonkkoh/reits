@@ -1,0 +1,40 @@
+//@version=6
+// --- INDICATOR: Golden Cross Confirmed RSI Dip Strategy ---
+// This indicator combines a long-term trend filter (Golden Cross) with a short-term tactical entry signal (RSI dip).
+// A buy signal is shown only when:
+// 1. The 50-day SMA is above the 200-day SMA.
+// 2. The 14-period RSI crosses below 40.
+
+indicator("Golden Cross + RSI Dip Entry", overlay=true)
+
+// --- Inputs ---
+shortMaLength = input.int(50, title="Short-term MA")
+longMaLength = input.int(200, title="Long-term MA")
+rsiLength = input.int(14, title="RSI Length")
+rsiDipLevel = input.int(40, title="RSI Dip-Buy Level")
+
+// --- Calculations ---
+// 1. Trend Confirmation Filter
+shortMA = ta.sma(close, shortMaLength)
+longMA = ta.sma(close, longMaLength)
+isUptrend = shortMA > longMA
+
+// 2. Tactical Entry Signal Calculation
+rsiValue = ta.rsi(close, rsiLength)
+rsiDipSignal = ta.crossunder(rsiValue, rsiDipLevel)
+
+// Final Signal Logic
+// A buy signal is only valid if the trend is up AND the RSI dip occurs.
+buySignal = isUptrend and rsiDipSignal
+
+// Plotting & Visuals
+// Plot the moving averages on the main chart for trend context.
+plot(shortMA, "50 SMA", color=color.new(color.orange, 40))
+plot(longMA, "200 SMA", color=color.new(color.blue, 20), linewidth=2)
+
+// Color the background green when the trend is up (50 > 200 SMA), red when down.
+// This visually shows when the strategy is "armed" and looking for buys.
+bgcolor(isUptrend ? color.new(color.green, 90) : color.new(color.red, 90))
+
+// Add a clear visual marker on the price chart for the specific buy signal.
+plotshape(series=buySignal, title="RSI Dip Buy Signal", location=location.belowbar, color=color.new(color.lime, 0), style=shape.labelup, text="BUY", textcolor=color.white, size=size.small)
