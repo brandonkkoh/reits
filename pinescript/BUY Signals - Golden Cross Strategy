@@ -1,13 +1,14 @@
 //@version=6
-
-indicator("Golden Cross Buy Signals", overlay=true)
+indicator("BUY Signals - Golden Cross Strategy", overlay=true)
 
 // --- Define the Moving Averages ---
 shortMaLength = input.int(50, title="Short-term MA")
 longMaLength = input.int(200, title="Long-term MA")
 
+
 shortMA = ta.sma(close, shortMaLength)
 longMA = ta.sma(close, longMaLength)
+
 
 // --- Identify the Golden Cross Signal ---
 // The 'ta.crossover' function is true only on the single bar where the crossover happens.
