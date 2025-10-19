@@ -1,21 +1,21 @@
 //@version=6
-// INDICATOR: Bearish RSI Divergence on RSI Chart
+//SELL Signals -  Bearish Divergence (Relative Strength Index) Strategy on RSI Chart 
 
-indicator("Bearish RSI Divergence on RSI Chart")
+indicator("SELL Signals -  Bearish Divergence (Relative Strength Index) Strategy on RSI Chart ")
 
-// Inputs
+// --- Inputs ---
 rsiLength = input.int(14, title="RSI Length")
 pivotLookback = input.int(5, title="Pivot Lookback Period")
 rsiStrengthLevel = input.int(60, title="Min RSI Level for Divergence")
 
-// Calculations 
+// --- Calculations ---
 rsiValue = ta.rsi(close, rsiLength)
 
 // Find the last pivot high points in both price and RSI
 pivotHighPrice = ta.pivothigh(high, pivotLookback, pivotLookback)
 pivotHighRsi = ta.pivothigh(rsiValue, pivotLookback, pivotLookback)
 
-// Divergence Logic 
+// --- Divergence Logic ---
 var float lastPivotPrice = na
 var float lastPivotRsi = na
 var int lastPivotBarIndex = na
@@ -24,20 +24,20 @@ bool bearishDivergence = false
 
 // When a new RSI pivot high is detected...
 if not na(pivotHighRsi)
-   // Check for the divergence condition
-   if not na(lastPivotPrice) and pivotHighPrice > lastPivotPrice and pivotHighRsi < lastPivotRsi
-       bearishDivergence := true
-       // Draw a line on the chart connecting the two price peaks
-       line.new(bar_index[pivotLookback], pivotHighPrice, lastPivotBarIndex, lastPivotPrice, color=color.new(color.red, 50), width=2)
-       // Draw a line on the RSI pane connecting the two RSI peaks
-       line.new(bar_index[pivotLookback], pivotHighRsi, lastPivotBarIndex, lastPivotRsi, color=color.new(color.red, 50), width=2)
+    // Check for the divergence condition
+    if not na(lastPivotPrice) and pivotHighPrice > lastPivotPrice and pivotHighRsi < lastPivotRsi
+        bearishDivergence := true
+        // Draw a line on the chart connecting the two price peaks
+        line.new(bar_index[pivotLookback], pivotHighPrice, lastPivotBarIndex, lastPivotPrice, color=color.new(color.red, 50), width=2)
+        // Draw a line on the RSI pane connecting the two RSI peaks
+        line.new(bar_index[pivotLookback], pivotHighRsi, lastPivotBarIndex, lastPivotRsi, color=color.new(color.red, 50), width=2)
   
-   // Update the 'last pivot' values for the next comparison
-   lastPivotPrice := pivotHighPrice
-   lastPivotRsi := pivotHighRsi
-   lastPivotBarIndex := bar_index[pivotLookback]
+    // Update the 'last pivot' values for the next comparison
+    lastPivotPrice := pivotHighPrice
+    lastPivotRsi := pivotHighRsi
+    lastPivotBarIndex := bar_index[pivotLookback]
 
-// Plotting & Visuals 
+// Plotting & Visuals
 
 // Plot the RSI line itself
 plot(rsiValue, "RSI", color.orange)
