@@ -1,9 +1,8 @@
 //@version=6
-// INDICATOR: MACD Sell Signal Markers (on Price Chart) 
+// SELL Signal - Bearish Crossover (Moving Average Convergence Divergence) 
 // This script plots the MACD sell signals directly on the main price chart using overlay=true. Use it in combination with the standard MACD indicator.
-// As of: September 25, 2025, Singapore
 
-indicator("MACD Sell Signal Markers", overlay=true)
+indicator("SELL Signal - Bearish Crossover (Moving Average Convergence/Divergence)", overlay=true)
 
 // Inputs 
 fastLength = input.int(12, title="MACD Fast Length")
@@ -11,11 +10,11 @@ slowLength = input.int(26, title="MACD Slow Length")
 signalLength = input.int(9, title="MACD Signal Length")
 pivotLookback = input.int(5, title="Pivot Lookback Period")
 
-
 // Calculations 
 [macdLine, signalLine, histValue] = ta.macd(close, fastLength, slowLength, signalLength)
 
-// Signal Logic 
+
+// Signal Logic
 // 1. Bearish Crossover Signal
 bearishCrossover = ta.crossunder(macdLine, signalLine) and macdLine > 0
 
@@ -28,15 +27,15 @@ var int lastPivotBarIndex = na
 bool bearishDivergence = false
 
 if not na(pivotHighMacd) and pivotHighMacd > 0
-   if not na(lastPivotPrice) and pivotHighPrice > lastPivotPrice and pivotHighMacd < lastPivotMacd
-       bearishDivergence := true
-       line.new(bar_index[pivotLookback], pivotHighPrice, lastPivotBarIndex, lastPivotPrice, color=color.new(color.purple, 50), width=2)
+    if not na(lastPivotPrice) and pivotHighPrice > lastPivotPrice and pivotHighMacd < lastPivotMacd
+        bearishDivergence := true
+        line.new(bar_index[pivotLookback], pivotHighPrice, lastPivotBarIndex, lastPivotPrice, color=color.new(color.purple, 50), width=2)
   
-   lastPivotPrice := pivotHighPrice
-   lastPivotMacd := pivotHighMacd
-   lastPivotBarIndex := bar_index[pivotLookback]
+    lastPivotPrice := pivotHighPrice
+    lastPivotMacd := pivotHighMacd
+    lastPivotBarIndex := bar_index[pivotLookback]
 
-// Plotting & Visuals on the Price Chart 
+// --- Plotting & Visuals on the Price Chart ---
 plotshape(series=bearishCrossover, title="Bearish Crossover", location=location.abovebar, color=color.new(color.red, 0), style=shape.triangledown, text="SELL\nX", textcolor=color.white, size=size.small)
 
 plotshape(series=bearishDivergence, title="Bearish Divergence", location=location.abovebar, color=color.new(color.purple, 0), style=shape.labeldown, text="SELL\nDIV", textcolor=color.white, size=size.small)
