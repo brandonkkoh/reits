@@ -102,9 +102,9 @@ for stock in stock_codes:
             recommendations.to_csv(os.path.join(folder_name, f"{stock}_recommendations.csv"), index=False)
         stock_price_history.to_csv(os.path.join(folder_name, f"{stock}_stock_price_history.csv"), index=False)
 
-        print(f"✅ Saved all data for {stock} in {folder_name}/")
+        print(f"Saved all data for {stock} in {folder_name}/")
 
     except Exception as e:
-        print(f"❌ Error fetching data for {stock}: {e}")
+        print(f"Error fetching data for {stock}: {e}")
 
 print("\nAll financial data has been successfully saved in 'company_financials' folder.")
