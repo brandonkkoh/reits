@@ -1,0 +1,234 @@
+
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>REITs Overview Dashboard</title>
+            <link rel="preconnect" href="https://fonts.googleapis.com">
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+            <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+            <style>
+                :root {
+                    --primary-bg: #f8f9fa; --content-bg: #ffffff; --border-color: #dee2e6; --header-bg: #f1f3f5;
+                    --font-color: #212529; --font-color-light: #6c757d;
+                    --blue-link: #007bff; --sidebar-width: 260px; --shadow: 0 4px 12px rgba(0,0,0,0.08);
+                }
+                body { display: flex; font-family: 'Inter', 'Arial', sans-serif; background-color: var(--primary-bg); color: var(--font-color); margin: 0; line-height: 1.6; }
+                #sidebar { width: var(--sidebar-width); background: var(--content-bg); padding: 25px; position: fixed; height: 100vh; overflow-y: auto; border-right: 1px solid var(--border-color); box-sizing: border-box; }
+                #sidebar h2 { font-size: 1.2rem; font-weight: 600; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-top: 0; }
+
+                /* --- Styles for Sidebar Navigation --- */
+                #sidebar ul {
+                    list-style-type: none;
+                    padding: 0;
+                    margin: 10px 0 0;
+                }
+                #sidebar li a {
+                    display: block;
+                    padding: 8px 0;
+                    color: #343a40;
+                    text-decoration: none;
+                    border-radius: 4px;
+                    transition: background-color 0.2s, color 0.2s;
+                    font-size: 0.9rem;
+                }
+                #sidebar li a:hover {
+                    background-color: #e9ecef;
+                    color: var(--blue-link);
+                }
+                /* ------------------------------------ */
+
+                #content { margin-left: var(--sidebar-width); padding: 30px; width: calc(100% - var(--sidebar-width)); box-sizing: border-box; }
+                #content h1 { font-size: 2.2rem; font-weight: 700; margin-top: 0; }
+                #content h1 small { display: block; font-size: 1rem; font-weight: 400; color: var(--font-color-light); margin-top: 8px; }
+                .table-container { width: 100%; overflow-x: auto; }
+                table { width: 100%; border-collapse: collapse; margin-top: 25px; background: var(--content-bg); border-radius: 8px; box-shadow: var(--shadow); min-width: 1800px; }
+                th, td { padding: 14px 16px; text-align: center; border-bottom: 1px solid var(--border-color); white-space: nowrap; }
+                td { font-size: 0.9rem; font-weight: 400; }
+                thead th { background-color: var(--header-bg); font-weight: 600; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.5px; position: sticky; top: 0; z-index: 10; cursor: pointer; transition: background-color 0.2s ease; }
+                thead th:hover { background-color: #e2e6ea; z-index: 11; }
+                th.sort-up::after, th.sort-down::after { content: ' '; position: relative; left: 5px; border: 5px solid transparent; }
+                th.sort-up::after { top: -10px; border-bottom-color: var(--font-color-light); }
+                th.sort-down::after { top: 10px; border-top-color: var(--font-color-light); }
+                tbody tr:last-child td { border-bottom: none; }
+                tbody tr:hover { background-color: #f8f9fa; }
+                a { color: var(--blue-link); text-decoration: none; font-weight: 500; }
+                a:hover { text-decoration: underline; }
+                .truncate { max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: help; text-align: left !important; }
+                .align-left { text-align: left !important; }
+
+                /* Tooltip Styles */
+                .tooltip-container { position: relative; display: inline-flex; align-items: center; justify-content: center; }
+                .info-icon { display: inline-block; width: 15px; height: 15px; border-radius: 50%; background-color: var(--font-color-light); color: var(--content-bg); font-size: 11px; line-height: 15px; text-align: center; font-weight: 600; margin-left: 8px; cursor: help; transition: background-color 0.2s; }
+                .tooltip-text { visibility: hidden; opacity: 0; width: 240px; background-color: #333; color: #fff; text-align: left; border-radius: 6px; padding: 10px 12px; position: absolute; z-index: 20; top: 150%; left: 50%; transform: translateX(-50%); transition: opacity 0.2s ease-in-out; font-size: 0.8rem; font-weight: 400; text-transform: none; line-height: 1.5; box-shadow: 0 2px 8px rgba(0,0,0,0.2); white-space: normal; }
+                .tooltip-text::after { content: ""; position: absolute; bottom: 100%; left: 50%; margin-left: -5px; border-width: 5px; border-style: solid; border-color: transparent transparent #333 transparent; }
+                .tooltip-container:hover .tooltip-text { visibility: visible; opacity: 1; }
+                .tooltip-container:hover .info-icon { background-color: var(--blue-link); }
+            </style>
+        </head>
+        <body>
+            <div id="sidebar"><h2>Navigation</h2><ul><li><a href="fundamentals/C38U.html">CapitaLand Integrated Commercial Trust (C38U)</a></li><li><a href="fundamentals/C2PU.html">Parkway Life REIT (C2PU)</a></li><li><a href="fundamentals/N2IU.html">Mapletree Pan Asia Commercial Trust (N2IU)</a></li><li><a href="fundamentals/HMN.html">CapitaLand Ascott Trust (HMN)</a></li><li><a href="fundamentals/Q5T.html">Far East Hospitality Trust (Q5T)</a></li><li><a href="fundamentals/ME8U.html">Mapletree Industrial Trust (ME8U)</a></li><li><a href="fundamentals/K71U.html">Keppel REIT (K71U)</a></li><li><a href="fundamentals/BTOU.html">Manulife US REIT (BTOU)</a></li><li><a href="fundamentals/J69U.html">Frasers Centrepoint Trust (J69U)</a></li><li><a href="fundamentals/AJBU.html">Keppel DC REIT (AJBU)</a></li></ul></div></div>
+            <div id="content">
+                <h1>REITs Overview <small>Updated on 21 October 2025, 08:16 PM +08</small></h1>
+                <div class="table-container">
+                    <table>
+                        
+    <thead>
+        <tr>
+            <th data-sort-method='none'>#</th>
+            <th>Stock Code</th>
+            <th class="align-left" data-sort-method='none'>Name</th>
+            <th>Price (S$)</th>
+            <th><div class="tooltip-container">Yield %<span class="info-icon">i</span><span class="tooltip-text">The dividend yield based on the current price. Higher is generally better.</span></div></th>
+            <th><div class="tooltip-container">DPU (2024)<span class="info-icon">i</span><span class="tooltip-text">Distribution Per Unit. The expected dividend payout for 2024.</span></div></th>
+            <th><div class="tooltip-container">P/B Ratio<span class="info-icon">i</span><span class="tooltip-text">Price-to-Book Ratio (Current Price). Compares the market price to the company's book value per share.</span></div></th>
+            <th><div class="tooltip-container">NAV (Per Unit)<span class="info-icon">i</span><span class="tooltip-text">Net Asset Value per unit. It is the intrinsic value or net worth of a single unit in an investment fund</span></div></th>
+            <th><div class="tooltip-container">D/E Ratio<span class="info-icon">i</span><span class="tooltip-text">Debt-to-Equity Ratio. Indicates the proportion of equity and debt used to finance assets. Lower is generally better (below 1.0 is good).</span></div></th>
+            <th><div class="tooltip-container">Gearing Ratio<span class="info-icon">i</span><span class="tooltip-text">Total Debt / Total Assets. A measure of financial leverage. Lower is generally better (below 0.45 is good). For REITs will be calculated using Total Assets https://www.sgx.com/research-education/market-updates/20240729-reit-watch-maintaining-balance-sheet-strengths-s-reits</span></div></th>
+        </tr>
+    </thead>
+    
+                        <tbody>
+                            
+        <tr>
+            <td>1</td>
+            <td><a href="#">C38U</a></td>
+            <td class="align-left">CapitaLand Integrated Commercial Trust</td>
+            <td>2.40</td>
+            <td>5.42</td>
+            <td>0.130</td>
+            <td>1.114</td>
+            <td>2.15</td>
+            <td>0.571</td>
+            <td>0.352</td>
+        </tr>
+        
+        <tr>
+            <td>2</td>
+            <td><a href="#">C2PU</a></td>
+            <td class="align-left">Parkway Life REIT</td>
+            <td>4.15</td>
+            <td>4.82</td>
+            <td>0.200</td>
+            <td>1.724</td>
+            <td>2.41</td>
+            <td>0.564</td>
+            <td>0.347</td>
+        </tr>
+        
+        <tr>
+            <td>3</td>
+            <td><a href="#">N2IU</a></td>
+            <td class="align-left">Mapletree Pan Asia Commercial Trust</td>
+            <td>1.46</td>
+            <td>5.86</td>
+            <td>0.086</td>
+            <td>0.799</td>
+            <td>1.83</td>
+            <td>0.623</td>
+            <td>0.372</td>
+        </tr>
+        
+        <tr>
+            <td>4</td>
+            <td><a href="#">HMN</a></td>
+            <td class="align-left">CapitaLand Ascott Trust</td>
+            <td>0.94</td>
+            <td>6.00</td>
+            <td>0.056</td>
+            <td>0.737</td>
+            <td>1.28</td>
+            <td>0.706</td>
+            <td>0.387</td>
+        </tr>
+        
+        <tr>
+            <td>5</td>
+            <td><a href="#">Q5T</a></td>
+            <td class="align-left">Far East Hospitality Trust</td>
+            <td>0.60</td>
+            <td>6.83</td>
+            <td>0.041</td>
+            <td>0.658</td>
+            <td>0.92</td>
+            <td>0.387</td>
+            <td>0.277</td>
+        </tr>
+        
+        <tr>
+            <td>6</td>
+            <td><a href="#">ME8U</a></td>
+            <td class="align-left">Mapletree Industrial Trust</td>
+            <td>2.16</td>
+            <td>6.26</td>
+            <td>0.135</td>
+            <td>1.186</td>
+            <td>1.82</td>
+            <td>0.629</td>
+            <td>0.371</td>
+        </tr>
+        
+        <tr>
+            <td>7</td>
+            <td><a href="#">K71U</a></td>
+            <td class="align-left">Keppel REIT</td>
+            <td>1.02</td>
+            <td>5.59</td>
+            <td>0.057</td>
+            <td>0.695</td>
+            <td>1.47</td>
+            <td>0.471</td>
+            <td>0.314</td>
+        </tr>
+        
+        <tr>
+            <td>8</td>
+            <td><a href="#">BTOU</a></td>
+            <td class="align-left">Manulife US REIT</td>
+            <td>0.07</td>
+            <td>0.00</td>
+            <td>0.000</td>
+            <td>0.297</td>
+            <td>0.24</td>
+            <td>1.732</td>
+            <td>0.609</td>
+        </tr>
+        
+        <tr>
+            <td>9</td>
+            <td><a href="#">J69U</a></td>
+            <td class="align-left">Frasers Centrepoint Trust</td>
+            <td>2.45</td>
+            <td>4.90</td>
+            <td>0.120</td>
+            <td>1.070</td>
+            <td>2.29</td>
+            <td>0.487</td>
+            <td>0.318</td>
+        </tr>
+        
+        <tr>
+            <td>10</td>
+            <td><a href="#">AJBU</a></td>
+            <td class="align-left">Keppel DC REIT</td>
+            <td>2.38</td>
+            <td>5.38</td>
+            <td>0.128</td>
+            <td>1.540</td>
+            <td>1.55</td>
+            <td>0.501</td>
+            <td>0.309</td>
+        </tr>
+        
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <script>
+            (function(){function e(a,b){if(!(a instanceof b))throw new TypeError("Cannot call a class as a function")}function g(a,b){for(var c=0;c<b.length;c++){var d=b[c];d.enumerable=d.enumerable||!1;d.configurable=!0;"value"in d&&(d.writable=!0);Object.defineProperty(a,d.key,d)}}function k(a,b,c){b&&g(a.prototype,b);c&&g(a,c);return a}var h=function(){function a(c,b){e(this,a);if(!c||!c.tagName||"TABLE"!==c.tagName.toUpperCase())throw new Error("Expecting a table, got "+(c?c.nodeName:"null"));this.table=c;this.table.classList.add("tablesort");b=b||{};this.options=b;this.createThs();this.bindEvents()}return k(a,[{key:"createThs",value:function(){var c,b=[];c=this.table.querySelectorAll("thead th");[].forEach.call(c,function(a){var c=a.getAttribute("data-sort-method");a.getAttribute("role")||a.setAttribute("role","columnheader");null!==c&&(a.tablesort=this,b.push(a))}.bind(this));this.ths=b}},{key:"bindEvents",value:function(){this.table.addEventListener("click",this.onthclick.bind(this),!1)}},{key:"onthclick",value:function(c){var b=this,d=c.target;if("TH"===d.tagName||"DIV"===d.parentElement.tagName&&"TH"===d.parentElement.parentElement.tagName){var a=d.closest("th"),f=this.ths.indexOf(a);-1!==f&&(this.ths.forEach(function(c){c!==a&&(c.classList.remove("sort-up","sort-down"),c.setAttribute("aria-sort","none"))}),a.classList.contains("sort-down")?this.sortTable(a,!0):this.sortTable(a))}}},{key:"sortTable",value:function(c,b){var d=this,a=c.cellIndex,f=[],e=c.getAttribute("data-sort-method"),g=this.table.querySelectorAll("tbody > tr");[].forEach.call(g,function(a,b){var c=a.children[a.children.length-1===a?a.children.length-1:a];f.push([e?c.getAttribute("data-sort-value"):c.textContent,a])});f.sort(function(a,c){return"none"===e?0:((b?a[0]:c[0])>(b?c[0]:a[0])?1:-1)*(d.options.descending?-1:1)});b?(c.classList.remove("sort-down"),c.classList.add("sort-up"),c.setAttribute("aria-sort","ascending")):(c.classList.remove("sort-up"),c.classList.add("sort-down"),c.setAttribute("aria-sort","descending"));var h=this.table.querySelector("tbody");f.forEach(function(a){h.appendChild(a[1])})}}]),a}();"undefined"!==typeof module&&module.exports?module.exports=h:window.Tablesort=h})();
+            new Tablesort(document.querySelector('table'));
+            </script>
+        </body>
+        </html>
+        
