@@ -1,0 +1,5 @@
+# pip install tensorflow
+# pip uninstall pandas numpy
+# pip install numpy==1.26.4 --user
+# !pip install matplotlib
+# !pip install tensorflow
